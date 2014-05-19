@@ -1,7 +1,7 @@
 from lib.garden import Garden
+import datetime
 
 garden = Garden()
-
 
 """ Read the moisture level """
 moisture = garden.read_mcp3008(channel_num=0)
@@ -12,7 +12,7 @@ data = garden.get_data()
 """ Append the new reading """
 data.append({
     'time': datetime.datetime.utcnow().isoformat(),
-    'moistureLevel': new_val,
+    'moistureLevel': moisture,
     })
 
 """ Limit our data sample to 100 """
