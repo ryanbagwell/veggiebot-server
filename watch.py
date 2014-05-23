@@ -4,7 +4,7 @@ import random
 
 garden = Garden()
 
-moisture = garden.read_mcp3008(channel_num=0)
+moisture = garden.sample_mcp3008(channel_num=0)
 
 print "Moisture level: %s" % moisture
 
@@ -24,7 +24,7 @@ def speak(message):
 if moisture < garden.moisture_threshold:
     print "Stopping pump ..."
     result = os.system('insteonic irrigation off')
-    print "Result: %s" & result
+    print "Result: %s" % result
     speak("The garden is good!")
     #garden.notify("Stopped watering the garden. Moisture level: %s." % moisture)
 
