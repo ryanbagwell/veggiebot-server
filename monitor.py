@@ -1,4 +1,4 @@
-from lib.garden import Garden
+from lib.garden import Garden, Pin
 import datetime
 import os
 import sys
@@ -25,14 +25,15 @@ sensor2 = garden.sample_mcp3008(channel_num=1)
 print "Sensor 1: %s" % sensor1
 print "Sensor 2: %s" % sensor2
 
-moisture = sensor1
+moisture = sensor2
 
 if moisture < garden.moisture_threshold:
-    garden.pump(status='off')
+    pin = Pin(17)
+    pin.off()
 
 elif moisture > 900:
-    garden.pump(status='on')
-
+    pin = Pin(17)
+    pin.on()
 
     #result = os.system('insteonic irrigation off')
     #print "Result: %s" % result
