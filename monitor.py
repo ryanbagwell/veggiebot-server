@@ -28,14 +28,19 @@ print "Sensor 2: %s" % sensor2
 moisture = sensor1
 
 if moisture < garden.moisture_threshold:
-    print "Stopping pump ..."
+    garden.pump(status='off')
+
+elif moisture > 900:
+    garden.pump(status='on')
+
+
     #result = os.system('insteonic irrigation off')
     #print "Result: %s" % result
     #speak("The garden is good!")
     #garden.notify("Stopped watering the garden. Moisture level: %s." % moisture)
 
-elif moisture > 900:
-    pass
+
+    
     #speak("You need to water the garden")
     #garden.notify("Started watering the garden. Moisture level: %s." % moisture)
     #print os.system('insteonic irrigation on')
