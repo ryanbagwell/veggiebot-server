@@ -58,8 +58,9 @@ data = garden.get_data()
 data.append({
     'time': datetime.datetime.utcnow().isoformat(),
     'moistureLevel': moisture,
-    'sensor1': sensor1,
-    'sensor2': sensor2,
+    'sensor1': moisture,
+    'sensor2': temperature,
+    'temperature': temperature
     })
 
 """ Limit our data sample to 100 """
