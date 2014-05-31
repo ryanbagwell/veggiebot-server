@@ -18,25 +18,32 @@ def speak(message):
 garden = Garden()
 
 """ Read the moisture level """
-moisture = garden.sample_mcp3008(channel_num=0)
 
-print "Moisture level: %s" % moisture
+sensor1 = garden.sample_mcp3008(channel_num=0)
+sensor2 = garden.sample_mcp3008(channel_num=1)
+
+print "Sensor 1: %s" % sensor1
+print "Sensor 2: %s" % sensor2
+
+moisture = sensor1
 
 if moisture < garden.moisture_threshold:
     print "Stopping pump ..."
-    result = os.system('insteonic irrigation off')
-    print "Result: %s" % result
-    speak("The garden is good!")
+    #result = os.system('insteonic irrigation off')
+    #print "Result: %s" % result
+    #speak("The garden is good!")
     #garden.notify("Stopped watering the garden. Moisture level: %s." % moisture)
 
-elif moisture > 950:
-    speak("You need to water the garden")
+elif moisture > 900:
+    pass
+    #speak("You need to water the garden")
     #garden.notify("Started watering the garden. Moisture level: %s." % moisture)
-    print os.system('insteonic irrigation on')
+    #print os.system('insteonic irrigation on')
 
 """ Stop here if we're not in 30-minute intervals 
     so we don't log the data """
 minute = datetime.datetime.now().minute
+print minute
 if minute not in [0, 30]:
     sys.exit()
 
@@ -47,6 +54,8 @@ data = garden.get_data()
 data.append({
     'time': datetime.datetime.utcnow().isoformat(),
     'moistureLevel': moisture,
+    'sensor1': sensor1,
+    'sensor2': sensor2,
     })
 
 """ Limit our data sample to 100 """
