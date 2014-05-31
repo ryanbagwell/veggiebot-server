@@ -19,21 +19,19 @@ garden = Garden()
 
 """ Read the moisture level """
 
-sensor1 = garden.sample_mcp3008(channel_num=0)
-sensor2 = garden.sample_mcp3008(channel_num=1)
+moisture = garden.sample_mcp3008(channel_num=0)
+temperature = garden.sample_mcp3008(channel_num=1)
 
-print "Sensor 1: %s" % sensor1
-print "Sensor 2: %s" % sensor2
+print "Moisture: %s" % moisture
+print "Temperature: %s" % temperature
 
-moisture = sensor2
-
-if moisture < garden.moisture_threshold:
+if moisture < 600:
     pin = Pin(17)
-    pin.off()
+    pin.on()
 
 elif moisture > 900:
     pin = Pin(17)
-    pin.on()
+    pin.off()
 
     #result = os.system('insteonic irrigation off')
     #print "Result: %s" % result
