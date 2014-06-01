@@ -47,7 +47,7 @@ elif moisture > 900:
 """ Stop here if we're not in 30-minute intervals 
     so we don't log the data """
 minute = datetime.datetime.now().minute
-print minute
+
 if minute not in [0, 30]:
     sys.exit()
 

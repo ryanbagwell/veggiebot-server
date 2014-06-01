@@ -13,12 +13,6 @@ while True:
 
     celsius = (reading * 330) / 1023.0 - 50
 
-    #volts = reading * 3.3 / 1023.0
-
-    #mv = volts * 1000
-
-    #celsius = 
-
     fahrenheit = (celsius * 9.0 / 5.0) + 32.0;
 
     print "Moisture: %s; Temp: %s;" % (moisture, fahrenheit)
