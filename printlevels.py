@@ -9,11 +9,15 @@ while True:
     
     time.sleep(1)
     
-    volts = garden.sample_mcp3008(channel_num=1)
+    reading = garden.sample_mcp3008(channel_num=1)
 
-    millivolts = float(volts) * (3300.0 / 1024.0)
+    celsius = (reading * 330) / 1023.0 - 50
 
-    celsius = millivolts / 10.0
+    #volts = reading * 3.3 / 1023.0
+
+    #mv = volts * 1000
+
+    #celsius = 
 
     fahrenheit = (celsius * 9.0 / 5.0) + 32.0;
 
