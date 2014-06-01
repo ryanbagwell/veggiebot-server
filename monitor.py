@@ -51,6 +51,11 @@ minute = datetime.datetime.now().minute
 if minute not in [0, 30]:
     sys.exit()
 
+
+celsius = (temperature * 330) / 1023.0 - 50
+
+fahrenheit = (celsius * 9.0 / 5.0) + 32.0;
+
 """ Get the existing data """
 data = garden.get_data()
 
@@ -59,8 +64,8 @@ data.append({
     'time': datetime.datetime.utcnow().isoformat(),
     'moistureLevel': moisture,
     'sensor1': moisture,
-    'sensor2': temperature,
-    'temperature': temperature
+    'sensor2': fahrenheit,
+    'temperature': fahrenheit
     })
 
 """ Limit our data sample to 100 """
