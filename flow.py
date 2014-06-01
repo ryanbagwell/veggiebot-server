@@ -1,22 +1,6 @@
-import RPi.GPIO as GPIO
-
-GPIO.setmode(GPIO.BCM)
+from lib.garden import Flow
 
 
-GPIO.setup(23, GPIO.IN)
+flow = Flow(pin=4)
 
-i = 0
-
-
-def increment():
-		print i
-
-GPIO.add_event_detect(23, GPIO.RISING, callback=increment, bouncetime=0)
-
-
-while True:
-
-	GPIO.wait_for_edge(23, GPIO.RISING)
-	
-	i = i + 1
-	
+flow.listen()
