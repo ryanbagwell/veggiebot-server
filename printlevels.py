@@ -11,9 +11,9 @@ while True:
     
     volts = garden.sample_mcp3008(channel_num=1)
 
-    millivolts = volts * (3300 / 1024)
+    millivolts = float(volts) * (3300.0 / 1024.0)
 
-    celsius = (millivolts - 500) / 10
+    celsius = millivolts / 10.0
 
     fahrenheit = (celsius * 9.0 / 5.0) + 32.0;
 
