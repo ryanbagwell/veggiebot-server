@@ -4,6 +4,8 @@ import os
 import sys
 import random
 import xively
+import requests
+import json
 
 def speak(message):
 
@@ -19,8 +21,10 @@ garden = Garden()
 
 """ Read the moisture level """
 
-moisture = garden.sample_mcp3008(channel_num=0)
+moisture_reading = garden.sample_mcp3008(channel_num=0)
 temperature = garden.sample_mcp3008(channel_num=1)
+
+moisture = moisture_reading / 1023.0 * 100.0
 
 celsius = (temperature * 330) / 1023.0 - 50
 
@@ -48,19 +52,20 @@ elif moisture > 900:
     #garden.notify("Started watering the garden. Moisture level: %s." % moisture)
     #print os.system('insteonic irrigation on')
 
-""" Sent it to xively """
 
-api = xively.XivelyAPIClient('Oc3SqIBJtpfJuZseir2bGfvepJKQq4RPwh7KoEmx3y1rHHcL')
+moistureVolts = (moisture_reading * 3.3) / 1024
+moistureOhms = ((1/moistureVolts)*3300)-1000
+kiloOhms = moistureOhms / 1000
 
-feed = api.feeds.get(342218851)
+print "Volts: %s" % moistureVolts
+print "Ohms: %s" % moistureOhms
+print "Kiloohms: %s " % kiloOhms 
 
-feed.datastreams = [
-        xively.Datastream(id='SoilMoisture', current_value=moisture, at=datetime.datetime.utcnow()),
-        xively.Datastream(id='SoilTemperature', current_value=fahrenheit, at=datetime.datetime.utcnow()),
-    ]
+""" Formula taken from
+    http://jast.modares.ac.ir/pdf_4632_70c1ddfea84e18c2b4fa0cb50bc61af6.html """
+normalizedMoisture = 36.1*(kiloOhms/(0.0009*kiloOhms-0.049*celsius+1.68))**-0.156
 
-feed.update()
-
+print "Normalized moisture: %s" % normalizedMoisture
 
 """ Stop here if we're not in 30-minute intervals 
     so we don't log the data """
@@ -68,6 +73,22 @@ minute = datetime.datetime.now().minute
 
 if minute not in [0, 30]:
     sys.exit()
+
+""" Send it to parse.com """
+
+parse_headers = {
+    "X-Parse-Application-Id": "9NGEXKBz0x7p5SVPPXMbvMqDymXN5qCf387GpOE2",
+    "X-Parse-REST-API-Key": "SDWvYNwDCPB6ImJ6eo1L28Nr5fzrA4fQysIdjz4Y",
+    "Content-Type": "application/json",
+}
+
+payload = {
+    'moistureLevel': moisture,
+    'normalizedMoisture': normalizedMoisture,
+    'temperature': fahrenheit,
+}
+
+r = requests.post('https://api.parse.com/1/classes/SoilData', data=json.dumps(payload), headers=parse_headers)
 
 
 """ Get the existing data """
