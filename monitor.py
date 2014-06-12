@@ -33,13 +33,17 @@ fahrenheit = (celsius * 9.0 / 5.0) + 32.0;
 print "Moisture: %s" % moisture
 print "Temperature: %s" % fahrenheit
 
-if moisture < 600:
-    pin = Pin(17)
-    pin.on()
+settings = garden.get_status()
 
-elif moisture > 900:
+pump_setting = settings['results'][0]['pumpStatus']
+
+if moisture_reading < 600 or pump_setting == 'on':
     pin = Pin(17)
-    pin.off()
+    pin.off() #Off completes the circuit
+
+elif moisture_reading > 800 or pump_setting == 'off':
+    pin = Pin(17)
+    pin.on() #On opens the cirtuit
 
     #result = os.system('insteonic irrigation off')
     #print "Result: %s" % result
@@ -53,19 +57,19 @@ elif moisture > 900:
     #print os.system('insteonic irrigation on')
 
 
-moistureVolts = (moisture_reading * 3.3) / 1024
-moistureOhms = ((1/moistureVolts)*3300)-1000
-kiloOhms = moistureOhms / 1000
+moisture_volts = (moisture_reading * 3.3) / 1024
+moisture_ohms = ((1/moisture_volts)*3300)-1000
+moisture_kiloohms = moisture_ohms / 1000
 
-print "Volts: %s" % moistureVolts
-print "Ohms: %s" % moistureOhms
-print "Kiloohms: %s " % kiloOhms 
+print "Volts: %s" % moisture_volts
+print "Ohms: %s" % moisture_ohms
+print "Kiloohms: %s " % moisture_kiloohms 
 
 """ Formula taken from
     http://jast.modares.ac.ir/pdf_4632_70c1ddfea84e18c2b4fa0cb50bc61af6.html """
-normalizedMoisture = 36.1*(kiloOhms/(0.0009*kiloOhms-0.049*celsius+1.68))**-0.156
+normalized_moisture = 36.1*(moisture_kiloohms/(0.0009*moisture_kiloohms-0.049*celsius+1.68))**-0.156
 
-print "Normalized moisture: %s" % normalizedMoisture
+print "Normalized moisture: %s" % normalized_moisture
 
 """ Stop here if we're not in 30-minute intervals 
     so we don't log the data """
@@ -84,31 +88,17 @@ parse_headers = {
 
 payload = {
     'moistureLevel': moisture,
-    'normalizedMoisture': normalizedMoisture,
+    'moistureReading': moisture_reading,
+    'moistureVolts': moisture_volts,
+    'moistureOhms': moisture_ohms,
+    'moistureKOhms': moisture_kiloohms,
+    'normalizedMoisture': normalized_moisture,
     'temperature': fahrenheit,
 }
 
-r = requests.post('https://api.parse.com/1/classes/SoilData', data=json.dumps(payload), headers=parse_headers)
+garden.save_data(payload)
 
 
-""" Get the existing data """
-data = garden.get_data()
-
-""" Append the new reading """
-data.append({
-    'time': datetime.datetime.utcnow().isoformat(),
-    'moistureLevel': moisture,
-    'sensor1': moisture,
-    'sensor2': fahrenheit,
-    'temperature': fahrenheit
-    })
-
-""" Limit our data sample to 100 """
-if len(data) > 100:
-    data = data[-100:]
-
-""" Save the data """
-garden.save_data(data)
 
 
 
