@@ -65,12 +65,6 @@ print "Volts: %s" % moisture_volts
 print "Ohms: %s" % moisture_ohms
 print "Kiloohms: %s " % moisture_kiloohms 
 
-""" Formula taken from
-    http://jast.modares.ac.ir/pdf_4632_70c1ddfea84e18c2b4fa0cb50bc61af6.html """
-normalized_moisture = 36.1*(moisture_kiloohms/(0.0009*moisture_kiloohms-0.049*celsius+1.68))**-0.156
-
-print "Normalized moisture: %s" % normalized_moisture
-
 """ Stop here if we're not in 30-minute intervals 
     so we don't log the data """
 minute = datetime.datetime.now().minute
@@ -92,7 +86,6 @@ payload = {
     'moistureVolts': moisture_volts,
     'moistureOhms': moisture_ohms,
     'moistureKOhms': moisture_kiloohms,
-    'normalizedMoisture': normalized_moisture,
     'temperature': fahrenheit,
 }
 
