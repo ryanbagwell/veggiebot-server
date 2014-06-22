@@ -19,34 +19,14 @@ def speak(message):
     cmd = "espeak '%s' -s 160 %s" % (message, voice)
     os.system(cmd)
 
-garden = Garden()
-
-""" Read the moisture level """
-
-moisture_reading = garden.sample_mcp3008(channel_num=0)
-temperature = garden.sample_mcp3008(channel_num=1)
-
-moisture = moisture_reading / 1023.0 * 100.0
-
-celsius = (temperature * 330) / 1023.0 - 50
-
-fahrenheit = (celsius * 9.0 / 5.0) + 32.0;
-
-print "Moisture: %s" % moisture
-print "Temperature: %s" % fahrenheit
-
-settings = Settings()
 
 
 
 
-moisture_volts = (moisture_reading * 3.3) / 1024
-moisture_ohms = ((1/moisture_volts)*3300)-1000
-moisture_kiloohms = moisture_ohms / 1000
 
-print "Volts: %s" % moisture_volts
-print "Ohms: %s" % moisture_ohms
-print "Kiloohms: %s " % moisture_kiloohms 
+
+
+
 
 
 
@@ -54,6 +34,37 @@ print "Kiloohms: %s " % moisture_kiloohms
 def save_data(payload):
 
     garden = Garden()
+
+    """ Read the moisture level """
+
+    moisture_reading = garden.sample_mcp3008(channel_num=0)
+    temperature = garden.sample_mcp3008(channel_num=1)
+
+    moisture = moisture_reading / 1023.0 * 100.0
+
+    celsius = (temperature * 330) / 1023.0 - 50
+
+    fahrenheit = (celsius * 9.0 / 5.0) + 32.0;
+
+    print "Moisture: %s" % moisture
+    print "Temperature: %s" % fahrenheit
+
+    moisture_volts = (moisture_reading * 3.3) / 1024
+    moisture_ohms = ((1/moisture_volts)*3300)-1000
+    moisture_kiloohms = moisture_ohms / 1000
+
+    print "Volts: %s" % moisture_volts
+    print "Ohms: %s" % moisture_ohms
+    print "Kiloohms: %s " % moisture_kiloohms 
+
+    payload = {
+        'moistureLevel': moisture,
+        'moistureReading': moisture_reading,
+        'moistureVolts': moisture_volts,
+        'moistureOhms': moisture_ohms,
+        'moistureKOhms': moisture_kiloohms,
+        'temperature': fahrenheit,
+    }
 
     garden.save_data(payload)
 
@@ -95,19 +106,8 @@ while True:
     if settings.changed.get('pumpStatus', None):
         thread.start_new_thread(trigger_pump,  (settings,))
 
-
     """ Only log our data every 30 minutes """
     if datetime.datetime.now().minute in [0, 30] and datetime.datetime.now().second is 0:
-    
-        payload = {
-            'moistureLevel': moisture,
-            'moistureReading': moisture_reading,
-            'moistureVolts': moisture_volts,
-            'moistureOhms': moisture_ohms,
-            'moistureKOhms': moisture_kiloohms,
-            'temperature': fahrenheit,
-        }
-
         thread.start_new_thread(save_data,  payload)
 
         
