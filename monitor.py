@@ -53,7 +53,7 @@ print "Kiloohms: %s " % moisture_kiloohms
 
 def save_data(payload):
 
-    garden = new Garden()
+    garden = Garden()
 
     garden.save_data(payload)
 
@@ -93,7 +93,7 @@ while True:
 
     """ If the pump status has changed, do something """
     if settings.changed.get('pumpStatus', None):
-        thread.start_new_thread(trigger_pump,  settings)
+        thread.start_new_thread(trigger_pump,  (settings,))
 
 
     """ Only log our data every 30 minutes """
