@@ -6,6 +6,8 @@ import random
 import xively
 import requests
 import json
+from time import sleep
+import thread
 
 def speak(message):
 
@@ -35,21 +37,7 @@ print "Temperature: %s" % fahrenheit
 
 settings = Settings()
 
-pin = Pin(17)
 
-if settings.pumpStatus == 'on':
-    pin.off() #Off completes the circuit
-
-if settings.pumpStatus == 'off':
-    pin.on() #On opens the cirtuit
-
-if settings.pumpStatus == 'auto':
-    
-    if moisture_reading < settings.autoThreshold - 50:
-        pin.off()
-
-    elif moisture_reading > settings.autoThreshold + 50:
-        pin.on()
 
 
 moisture_volts = (moisture_reading * 3.3) / 1024
@@ -60,31 +48,64 @@ print "Volts: %s" % moisture_volts
 print "Ohms: %s" % moisture_ohms
 print "Kiloohms: %s " % moisture_kiloohms 
 
-""" Stop here if we're not in 30-minute intervals 
-    so we don't log the data """
-minute = datetime.datetime.now().minute
 
-if minute not in [0, 30]:
-    sys.exit()
 
-""" Send it to parse.com """
 
-parse_headers = {
-    "X-Parse-Application-Id": "9NGEXKBz0x7p5SVPPXMbvMqDymXN5qCf387GpOE2",
-    "X-Parse-REST-API-Key": "SDWvYNwDCPB6ImJ6eo1L28Nr5fzrA4fQysIdjz4Y",
-    "Content-Type": "application/json",
-}
+def save_data(payload):
 
-payload = {
-    'moistureLevel': moisture,
-    'moistureReading': moisture_reading,
-    'moistureVolts': moisture_volts,
-    'moistureOhms': moisture_ohms,
-    'moistureKOhms': moisture_kiloohms,
-    'temperature': fahrenheit,
-}
+    garden = new Garden()
 
-garden.save_data(payload)
+    garden.save_data(payload)
+
+
+def trigger_pump():
+
+    settings = Settings()
+
+    pin = Pin(17)
+
+    if settings.pumpStatus == 'on':
+        pin.off() #Off completes the circuit
+
+    if settings.pumpStatus == 'off':
+        pin.on() #On opens the cirtuit
+
+    if settings.pumpStatus == 'auto':
+        
+        if moisture_reading < settings.autoThreshold - 50:
+            pin.off()
+
+        elif moisture_reading > settings.autoThreshold + 50:
+            pin.on()
+
+
+
+
+
+while True:
+
+    sleep(1)
+
+    
+
+    if datetime.datetime.now().minute in [0, 30] and datetime.datetime.now().second is 0:
+    
+        payload = {
+            'moistureLevel': moisture,
+            'moistureReading': moisture_reading,
+            'moistureVolts': moisture_volts,
+            'moistureOhms': moisture_ohms,
+            'moistureKOhms': moisture_kiloohms,
+            'temperature': fahrenheit,
+        }
+
+        thread.start_new_thread(save_data,  payload)
+
+        
+
+
+
+
 
 
 
