@@ -58,19 +58,20 @@ def save_data(payload):
     garden.save_data(payload)
 
 
-def trigger_pump():
 
-    settings = Settings()
+def trigger_pump(settings):
 
     pin = Pin(17)
 
     if settings.pumpStatus == 'on':
+        print "Turning pump on ..."
         pin.off() #Off completes the circuit
 
-    if settings.pumpStatus == 'off':
+    elif settings.pumpStatus == 'off':
+        print "Turning pump off ..."
         pin.on() #On opens the cirtuit
 
-    if settings.pumpStatus == 'auto':
+    elif settings.pumpStatus == 'auto':
         
         if moisture_reading < settings.autoThreshold - 50:
             pin.off()
@@ -80,14 +81,22 @@ def trigger_pump():
 
 
 
+settings = Settings()
 
 
 while True:
 
     sleep(1)
 
-    
+    """ Update our settings data """
+    settings.get_data()
 
+    """ If the pump status has changed, do something """
+    if settings.changed.get('pumpStatus', None):
+        thread.start_new_thread(trigger_pump,  settings)
+
+
+    """ Only log our data every 30 minutes """
     if datetime.datetime.now().minute in [0, 30] and datetime.datetime.now().second is 0:
     
         payload = {
