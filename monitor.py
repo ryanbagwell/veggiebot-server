@@ -1,4 +1,4 @@
-from lib.garden import Garden, Pin
+from lib.garden import Garden, Pin, Settings
 import datetime
 import os
 import sys
@@ -33,28 +33,23 @@ fahrenheit = (celsius * 9.0 / 5.0) + 32.0;
 print "Moisture: %s" % moisture
 print "Temperature: %s" % fahrenheit
 
-settings = garden.get_status()
+settings = Settings()
 
-pump_setting = settings['results'][0]['pumpStatus']
+pin = Pin(17)
 
-if moisture_reading < 600 or pump_setting == 'on':
-    pin = Pin(17)
+if settings.pumpStatus == 'on':
     pin.off() #Off completes the circuit
 
-elif moisture_reading > 800 or pump_setting == 'off':
-    pin = Pin(17)
+if settings.pumpStatus == 'off':
     pin.on() #On opens the cirtuit
 
-    #result = os.system('insteonic irrigation off')
-    #print "Result: %s" % result
-    #speak("The garden is good!")
-    #garden.notify("Stopped watering the garden. Moisture level: %s." % moisture)
-
-
+if settings.pumpStatus == 'auto':
     
-    #speak("You need to water the garden")
-    #garden.notify("Started watering the garden. Moisture level: %s." % moisture)
-    #print os.system('insteonic irrigation on')
+    if moisture_reading < settings.autoThreshold - 50:
+        pin.off()
+
+    elif moisture_reading > settings.autoThreshold + 50:
+        pin.on()
 
 
 moisture_volts = (moisture_reading * 3.3) / 1024
