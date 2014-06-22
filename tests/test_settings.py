@@ -1,14 +1,16 @@
 from lib.garden import Settings
 from time import sleep
 
+settings = Settings()
 
 while True:
 
-    settings = Settings()
+    sleep(1)
+
+    settings.get_data()
 
     print settings.changed
 
-    sleep(1)
 
 
 
