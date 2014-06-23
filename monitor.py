@@ -41,16 +41,9 @@ def read_values():
 
     fahrenheit = (celsius * 9.0 / 5.0) + 32.0;
 
-    print "Moisture: %s" % moisture
-    print "Temperature: %s" % fahrenheit
-
     moisture_volts = (moisture_reading * 3.3) / 1024
     moisture_ohms = ((1/moisture_volts)*3300)-1000
     moisture_kiloohms = moisture_ohms / 1000
-
-    print "Volts: %s" % moisture_volts
-    print "Ohms: %s" % moisture_ohms
-    print "Kiloohms: %s " % moisture_kiloohms 
 
     return {
         'moistureLevel': moisture,
@@ -70,6 +63,8 @@ def save_data(settings):
         print "Saving data"
 
         payload = read_values()
+
+        print payload
    
         garden.save_data(payload)
 
@@ -102,8 +97,6 @@ def trigger_pump(settings):
             elif values['moistureReading'] > settings.autoThreshold + 50:
                 pin.on()
 
-
-
 settings = Settings()
 
 
@@ -114,14 +107,3 @@ while True:
     thread.start_new_thread(trigger_pump,  (settings,))
 
     thread.start_new_thread(save_data, (settings,))
-
-        
-
-
-
-
-
-
-
-
-
