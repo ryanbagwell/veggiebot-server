@@ -62,10 +62,12 @@ def read_values():
     }
 
 
-def save_data():
+def save_data(settings):
 
     """ Only log our data every 30 minutes """
     if datetime.datetime.now().minute in [0, 30] and datetime.datetime.now().second is 0:
+
+        print "Saving data"
 
         payload = read_values()
    
@@ -88,7 +90,7 @@ def trigger_pump(settings):
             pin.on() #On opens the cirtuit
             return
 
-    else 
+    else: 
 
         values = read_values()
 
@@ -111,7 +113,7 @@ while True:
     
     thread.start_new_thread(trigger_pump,  (settings,))
 
-    thread.start_new_thread(save_data)
+    thread.start_new_thread(save_data, (settings,))
 
         
 
