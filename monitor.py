@@ -23,17 +23,12 @@ def speak(message):
 
 
 
+garden = Garden()
 
 
 
 
-
-
-
-
-def save_data(payload):
-
-    garden = Garden()
+def read_values():
 
     """ Read the moisture level """
 
@@ -57,7 +52,7 @@ def save_data(payload):
     print "Ohms: %s" % moisture_ohms
     print "Kiloohms: %s " % moisture_kiloohms 
 
-    payload = {
+    return {
         'moistureLevel': moisture,
         'moistureReading': moisture_reading,
         'moistureVolts': moisture_volts,
@@ -66,29 +61,44 @@ def save_data(payload):
         'temperature': fahrenheit,
     }
 
-    garden.save_data(payload)
 
+def save_data():
+
+    """ Only log our data every 30 minutes """
+    if datetime.datetime.now().minute in [0, 30] and datetime.datetime.now().second is 0:
+
+        payload = read_values()
+   
+        garden.save_data(payload)
 
 
 def trigger_pump(settings):
 
     pin = Pin(17)
 
-    if settings.pumpStatus == 'on':
-        print "Turning pump on ..."
-        pin.off() #Off completes the circuit
-
-    elif settings.pumpStatus == 'off':
-        print "Turning pump off ..."
-        pin.on() #On opens the cirtuit
-
-    elif settings.pumpStatus == 'auto':
+    if settings.changed.get('pumpStatus', None):
         
-        if moisture_reading < settings.autoThreshold - 50:
-            pin.off()
+        if settings.pumpStatus == 'on':
+            print "Turning pump on ..."
+            pin.off() #Off completes the circuit
+            return
 
-        elif moisture_reading > settings.autoThreshold + 50:
-            pin.on()
+        elif settings.pumpStatus == 'off':
+            print "Turning pump off ..."
+            pin.on() #On opens the cirtuit
+            return
+
+    else 
+
+        values = read_values()
+
+        if settings.pumpStatus == 'auto':
+        
+            if values['moistureReading'] < settings.autoThreshold - 50:
+                pin.off()
+
+            elif values['moistureReading'] > settings.autoThreshold + 50:
+                pin.on()
 
 
 
@@ -98,17 +108,10 @@ settings = Settings()
 while True:
 
     sleep(1)
+    
+    thread.start_new_thread(trigger_pump,  (settings,))
 
-    """ Update our settings data """
-    settings.get_data()
-
-    """ If the pump status has changed, do something """
-    if settings.changed.get('pumpStatus', None):
-        thread.start_new_thread(trigger_pump,  (settings,))
-
-    """ Only log our data every 30 minutes """
-    if datetime.datetime.now().minute in [0, 30] and datetime.datetime.now().second is 0:
-        thread.start_new_thread(save_data,  payload)
+    thread.start_new_thread(save_data)
 
         
 
