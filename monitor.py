@@ -73,6 +73,8 @@ def trigger_pump(settings):
 
     pin = Pin(17)
 
+    settings.get_data()
+
     if settings.changed.get('pumpStatus', None):
         
         if settings.pumpStatus == 'on':
@@ -99,11 +101,11 @@ def trigger_pump(settings):
 
 settings = Settings()
 
-
+print read_values()
 while True:
 
     sleep(1)
-    
+ 
     thread.start_new_thread(trigger_pump,  (settings,))
 
     thread.start_new_thread(save_data, (settings,))
