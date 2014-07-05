@@ -26,6 +26,18 @@ def speak(message):
 garden = Garden()
 
 
+def get_kpa(kohms, celsius):
+        """ Conversion equations taken from
+            http://www.kimberly.uidaho.edu/water/swm/Calibration_Watermark2.htm """
+
+    if kohms <= 8:
+        kpa = -20 * (kohms * (1+0.018 * (celsius-24)) - 0.55)
+    else:
+        kpa = -2.246 - 5.239 * kohms * (1 + 0.018 * (celsius - 24)) - (0.06756**2) * (1 + 0.018 * (celsius - 24))**2
+
+    return kpa
+
+
 
 
 def read_values():
@@ -45,6 +57,8 @@ def read_values():
     moisture_ohms = ((1/moisture_volts)*3300)-1000
     moisture_kiloohms = moisture_ohms / 1000
 
+    kpa = get_kpa(moisture_kiloohms, celsius)
+
     return {
         'moistureLevel': moisture,
         'moistureReading': moisture_reading,
@@ -52,6 +66,7 @@ def read_values():
         'moistureOhms': moisture_ohms,
         'moistureKOhms': moisture_kiloohms,
         'temperature': fahrenheit,
+        'moistureKPa': kpa,
     }
 
 
