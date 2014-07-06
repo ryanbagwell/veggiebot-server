@@ -1,9 +1,6 @@
 from .mixins import ADCMixin, ParseDataMixin
-import smtplib
 import time
 import datetime
-from email.mime.text import MIMEText
-from numpy import median
 import RPi.GPIO as GPIO
 
 
