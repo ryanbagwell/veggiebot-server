@@ -1,4 +1,4 @@
-from lib.garden import Garden, Pin, Settings
+from lib.garden import Pin, Settings, MoistureSensor
 import datetime
 import os
 import sys
@@ -20,10 +20,7 @@ def speak(message):
     os.system(cmd)
 
 
-
-
-
-garden = Garden()
+moisture_sensor = MoistureSensor()
 
 
 def get_kpa(kohms, celsius):
@@ -47,8 +44,8 @@ def read_values():
 
     """ Read the moisture level """
 
-    moisture_reading = garden.sample_mcp3008(channel_num=0)
-    temperature = garden.sample_mcp3008(channel_num=1)
+    moisture_reading = moisture_sensor.get_moisture()
+    temperature = moisture_sensor.get_temperature()
 
     moisture = moisture_reading / 1023.0 * 100.0
 
@@ -88,10 +85,8 @@ def save_data(settings):
         print "Saving data"
 
         payload = read_values()
-
-        print payload
    
-        garden.save_data(payload)
+        moisture_sensor.save_data(payload)
 
 
 def trigger_pump(settings):
