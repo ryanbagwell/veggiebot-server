@@ -162,6 +162,8 @@ class MoistureSensor(ADCMixin, SoilData):
     def __init__(self, *args, **kwargs):
         super(MoistureSensor, self).__init__(*args, **kwargs)
 
+        super(SoilData, self).__init__()
+
     """ Define the pins for our sensors """
     moisture_power_pin = 22
     temperature_power_pin = 22
