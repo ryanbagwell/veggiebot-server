@@ -1,13 +1,10 @@
-from lib.garden import Pin, Settings, MoistureSensor
+from lib.devices import Pin, Settings, MoistureSensor
 import datetime
 import os
-import sys
 import random
-import xively
-import requests
-import json
 from time import sleep
 import thread
+
 
 def speak(message):
 
@@ -61,7 +58,7 @@ def read_values():
 
     """ Field capacity is about -30 kPa, except
         in the case of sandy soils, which is -10 kPa """
-    
+
     available_water = -30 - -1500
 
     remaining_available = ((available_water - (kpa * -1)) / available_water) * 100
@@ -85,7 +82,7 @@ def save_data(settings):
         print "Saving data"
 
         payload = read_values()
-   
+
         moisture_sensor.save_data(payload)
 
 
@@ -96,7 +93,7 @@ def trigger_pump(settings):
     settings.get_data()
 
     if settings.changed.get('pumpStatus', None):
-        
+
         if settings.pumpStatus == 'on':
             print "Turning pump on ..."
             pin.off() #Off completes the circuit
@@ -107,12 +104,12 @@ def trigger_pump(settings):
             pin.on() #On opens the cirtuit
             return
 
-    else: 
+    else:
 
         values = read_values()
 
         if settings.pumpStatus == 'auto':
-        
+
             if values['moistureReading'] < settings.autoThreshold - 50:
                 pin.off()
 
@@ -125,7 +122,7 @@ print read_values()
 while True:
 
     sleep(1)
- 
+
     thread.start_new_thread(trigger_pump,  (settings,))
 
     thread.start_new_thread(save_data, (settings,))
