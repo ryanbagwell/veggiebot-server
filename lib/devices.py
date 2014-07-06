@@ -152,15 +152,15 @@ class MoistureSensor(ADCMixin, SoilData):
         read the Moisture sensor data from the mcp3008, and save it to
         parse.com """
 
-    def __init__(self, *args, **kwargs):
-        super(MoistureSensor, self).__init__(*args, **kwargs)
-        super(SoilData, self).__init__(*args, **kwargs)
-
     """ Define the pins for our sensors """
     moisture_power_pin = 22
     temperature_power_pin = 22
     moisture_adc_channel = 0
     temperature_adc_channel = 1
+
+    def __init__(self, *args, **kwargs):
+        super(MoistureSensor, self).__init__(*args, **kwargs)
+        super(SoilData, self).__init__(*args, **kwargs)
 
     def setup(self):
         super(MoistureSensor, self).setup()
@@ -180,8 +180,6 @@ class MoistureSensor(ADCMixin, SoilData):
         """ Shut off power to the sensor """
         GPIO.output(self.moisture_power_pin, False)
 
-        GPIO.cleanup()
-
         return moisture
 
     def get_temperature(self, fahrenheit=False):
@@ -196,8 +194,6 @@ class MoistureSensor(ADCMixin, SoilData):
 
         """ Turn the power off """
         GPIO.output(self.temperature_power_pin, False)
-
-        GPIO.cleanup()
 
         """ Convert the value to voltage, then to celsius """
         celsius = (reading * 330) / 1023.0 - 50
