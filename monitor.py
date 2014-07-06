@@ -62,8 +62,10 @@ def read_values():
 
     kpa = get_kpa(moisture_kiloohms, celsius)
 
+    percent_kpa = ((kpa + 1500) / -1500) * 100
+
     return {
-        'moistureLevel': moisture,
+        'moistureLevel': percent_kpa,
         'moistureReading': moisture_reading,
         'moistureVolts': moisture_volts,
         'moistureOhms': moisture_ohms,
