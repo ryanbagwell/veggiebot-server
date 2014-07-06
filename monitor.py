@@ -62,10 +62,15 @@ def read_values():
 
     kpa = get_kpa(moisture_kiloohms, celsius)
 
-    percent_kpa = ((kpa + 1500) / -1500) * 100
+    """ Field capacity is about -30 kPa, except
+        in the case of sandy soils, which is -10 kPa """
+    
+    available_water = -30 - -1500
+
+    remaining_available = ((available_water - (kpa * -1)) / available_water) * 100
 
     return {
-        'moistureLevel': percent_kpa,
+        'moistureLevel': remaining_available,
         'moistureReading': moisture_reading,
         'moistureVolts': moisture_volts,
         'moistureOhms': moisture_ohms,
