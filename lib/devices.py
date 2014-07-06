@@ -3,6 +3,9 @@ import time
 import datetime
 import RPi.GPIO as GPIO
 
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+
 
 class SoilData(ParseDataMixin):
     """ A class to save and retrieve soil data
@@ -66,10 +69,6 @@ class Flow(SoilData):
 
         self.pin = pin
 
-        GPIO.setmode(GPIO.BCM)
-
-        GPIO.setwarnings(False)
-
         GPIO.setup(pin, GPIO.IN)
 
         data = self.get_data()
@@ -123,9 +122,6 @@ class Pin(object):
     def __init__(self, pin, mode=GPIO.BCM, warnings=False):
         self.pin = pin
 
-        GPIO.setmode(mode)
-        GPIO.setwarnings(warnings)
-
     def status(self):
         """ Returns the status of the pin """
 
@@ -158,6 +154,7 @@ class MoistureSensor(ADCMixin, SoilData):
 
     def __init__(self, *args, **kwargs):
         super(MoistureSensor, self).__init__(*args, **kwargs)
+        super(SoilData, self).__init__(*args, **kwargs)
 
     """ Define the pins for our sensors """
     moisture_power_pin = 22

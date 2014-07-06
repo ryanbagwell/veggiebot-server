@@ -6,6 +6,9 @@ from numpy import median
 import smtplib
 from email.mime.text import MIMEText
 
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+
 
 class NotificationMixin(object):
 
@@ -39,10 +42,6 @@ class ADCMixin(object):
         self.setup()
 
     def setup(self):
-
-        GPIO.setmode(GPIO.BCM)
-
-        GPIO.setwarnings(False)
 
         """ Set the pins for the mcp3008 """
         GPIO.setup(self.mosi_pin, GPIO.OUT)
