@@ -3,6 +3,29 @@ import requests
 import json
 import ConfigParser
 from numpy import median
+import smtplib
+from email.mime.text import MIMEText
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+
+
+class NotificationMixin(object):
+
+    def notify_by_email(self, email_to=[], email_from=None, body=None):
+
+        msg = MIMEText(body, 'plain')
+        msg['Subject'] = body
+        msg['From'] = email_from
+        msg['To'] = email_to
+
+        server = smtplib.SMTP('smtp.gmail.com:587')
+        server.ehlo()
+        server.starttls()
+
+        server.login(self.gmail_user, self.gmail_password)
+
+        server.sendmail(self.email_from, self.email_to, msg.as_string())
 
 
 class ADCMixin(object):
@@ -19,10 +42,6 @@ class ADCMixin(object):
         self.setup()
 
     def setup(self):
-
-        GPIO.setmode(GPIO.BCM)
-
-        GPIO.setwarnings(False)
 
         """ Set the pins for the mcp3008 """
         GPIO.setup(self.mosi_pin, GPIO.OUT)

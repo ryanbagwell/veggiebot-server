@@ -1,10 +1,10 @@
 from .mixins import ADCMixin, ParseDataMixin
-import smtplib
 import time
 import datetime
-from email.mime.text import MIMEText
-from numpy import median
 import RPi.GPIO as GPIO
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
 
 
 class SoilData(ParseDataMixin):
@@ -69,10 +69,6 @@ class Flow(SoilData):
 
         self.pin = pin
 
-        GPIO.setmode(GPIO.BCM)
-
-        GPIO.setwarnings(False)
-
         GPIO.setup(pin, GPIO.IN)
 
         data = self.get_data()
@@ -126,9 +122,6 @@ class Pin(object):
     def __init__(self, pin, mode=GPIO.BCM, warnings=False):
         self.pin = pin
 
-        GPIO.setmode(mode)
-        GPIO.setwarnings(warnings)
-
     def status(self):
         """ Returns the status of the pin """
 
@@ -161,6 +154,7 @@ class MoistureSensor(ADCMixin, SoilData):
 
     def __init__(self, *args, **kwargs):
         super(MoistureSensor, self).__init__(*args, **kwargs)
+        super(SoilData, self).__init__(*args, **kwargs)
 
         super(SoilData, self).__init__()
 
