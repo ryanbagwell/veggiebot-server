@@ -42,9 +42,13 @@ def read_values():
     """ Read the moisture level """
 
     moisture_reading = moisture_sensor.get_moisture()
-    temperature = moisture_sensor.get_temperature(fahrenheit=True)
+    temperature = moisture_sensor.get_temperature()
 
     moisture = moisture_reading / 1023.0 * 100.0
+
+    celsius = (temperature * 330) / 1023.0 - 50
+
+    fahrenheit = (celsius * 9.0 / 5.0) + 32.0;
 
     moisture_volts = (moisture_reading * 3.3) / 1024
     moisture_ohms = moisture_volts / 0.0004514711929179567
@@ -65,7 +69,7 @@ def read_values():
         'moistureVolts': moisture_volts,
         'moistureOhms': moisture_ohms,
         'moistureKOhms': moisture_kiloohms,
-        'temperature': temperature,
+        'temperature': fahrenheit,
         'moistureKPa': kpa,
     }
 

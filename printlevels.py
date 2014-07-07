@@ -1,16 +1,20 @@
-from lib.devices import MoistureSensor
+from lib.garden import Garden
 import time
 
-moisture_sensor = MoistureSensor()
+garden = Garden()
 
 while True:
 
-    moisture = moisture_sensor.get_moisture()
-
+    moisture = garden.sample_mcp3008(channel_num=0)
+    
     time.sleep(1)
-   
-    temp = moisture_sensor.get_temperature(fahrenheit=False)
+    
+    reading = garden.sample_mcp3008(channel_num=1)
 
-    print "Moisture: %s; Temp: %s;" % (moisture, temp)
+    celsius = (reading * 330) / 1023.0 - 50
+
+    fahrenheit = (celsius * 9.0 / 5.0) + 32.0;
+
+    print "Moisture: %s; Temp: %s;" % (moisture, fahrenheit)
     
     time.sleep(1)
