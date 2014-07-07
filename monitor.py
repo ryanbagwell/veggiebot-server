@@ -42,11 +42,7 @@ def read_values():
     """ Read the moisture level """
 
     moisture_reading = moisture_sensor.get_moisture()
-    temperature = moisture_sensor.get_temperature()
-
-    moisture = moisture_reading / 1023.0 * 100.0
-
-    celsius = (temperature * 330) / 1023.0 - 50
+    celsius = moisture_sensor.get_temperature()
 
     fahrenheit = (celsius * 9.0 / 5.0) + 32.0;
 
