@@ -1,4 +1,5 @@
 from lib.devices import Pin, Settings, MoistureSensor
+from lib.utils import get_kpa, get_volts
 import datetime
 import os
 import random
@@ -20,34 +21,20 @@ def speak(message):
 moisture_sensor = MoistureSensor()
 
 
-def get_kpa(kohms, celsius):
-    """ Conversion equations taken from
-        http://www.kimberly.uidaho.edu/water/swm/calibration_watermark2.pdf """
-
-    if kohms < 1:
-        kpa = -20 * (kohms * (1 + 0.018 * (celsius - 24)) - 0.55)
-
-    elif 1 < kohms < 8:
-        kpa = (-3.213 * kohms - 4.093) / (1 - 0.009733 * kohms - 0.01205 * celsius)
-    else:
-        kpa = -2.246 - 5.239 * kohms * (1 + 0.018 * (celsius - 24)) - (0.06756**2) * (1 + 0.018 * (celsius - 24))**2
-
-    return kpa
-
-
-
-
 def read_values():
 
     """ Read the moisture level """
 
     moisture_reading = moisture_sensor.get_moisture()
+
     celsius = moisture_sensor.get_temperature()
 
-    fahrenheit = (celsius * 9.0 / 5.0) + 32.0;
+    fahrenheit = (celsius * 9.0 / 5.0) + 32.0
 
-    moisture_volts = (moisture_reading * 3.3) / 1024
+    moisture_volts = get_volts(moisture_reading)
+
     moisture_ohms = moisture_volts / 0.0004514711929179567
+
     moisture_kiloohms = moisture_ohms / 1000
 
     kpa = get_kpa(moisture_kiloohms, celsius)

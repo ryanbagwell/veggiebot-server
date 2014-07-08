@@ -1,20 +1,27 @@
-from lib.garden import Garden
+from lib.garden import MoistureSensor
+from lib.utils import get_kpa, get_volts
 import time
 
-garden = Garden()
+sensor = MoistureSensor()
 
 while True:
 
-    moisture = garden.sample_mcp3008(channel_num=0)
-    
+    moisture_reading = sensor.get_moisture()
+
+    moisture_volts = get_volts(moisture_reading)
+
+    moisture_ohms = moisture_volts / 0.0004514711929179567
+
+    moisture_kiloohms = moisture_ohms / 1000
+
+    kpa = get_kpa(moisture_kiloohms, celsius)
+
     time.sleep(1)
-    
-    reading = garden.sample_mcp3008(channel_num=1)
 
-    celsius = (reading * 330) / 1023.0 - 50
+    celsius = sensor.get_temperature()
 
-    fahrenheit = (celsius * 9.0 / 5.0) + 32.0;
+    fahrenheit = (celsius * 9.0 / 5.0) + 32.0
 
-    print "Moisture: %s; Temp: %s;" % (moisture, fahrenheit)
-    
+    print "Moisture: %s kPa; Temp: %s &degF;" % (kpa, fahrenheit)
+
     time.sleep(1)
