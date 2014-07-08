@@ -14,11 +14,11 @@ while True:
 
     moisture_kiloohms = moisture_ohms / 1000
 
-    kpa = get_kpa(moisture_kiloohms, celsius)
-
     time.sleep(1)
 
     celsius = sensor.get_temperature()
+
+    kpa = get_kpa(moisture_kiloohms, celsius)
 
     fahrenheit = (celsius * 9.0 / 5.0) + 32.0
 
