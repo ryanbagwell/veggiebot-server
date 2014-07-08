@@ -1,4 +1,4 @@
-from lib.garden import MoistureSensor
+from lib.devices import MoistureSensor
 from lib.utils import get_kpa, get_volts
 import time
 
