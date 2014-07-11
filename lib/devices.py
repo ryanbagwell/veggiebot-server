@@ -176,11 +176,15 @@ class MoistureSensor(ADCMixin, SoilData):
         """ Give the moisture sensor some power """
         GPIO.output(self.moisture_power_pin, True)
 
+        time.sleep(2)
+
         """ Read the value from the chip """
         moisture = self.sample(samples=sample_size, channel_num=self.moisture_adc_channel)
 
         """ Shut off power to the sensor """
         GPIO.output(self.moisture_power_pin, False)
+    
+        time.sleep(1)
 
         return moisture
 
