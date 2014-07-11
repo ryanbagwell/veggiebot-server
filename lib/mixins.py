@@ -219,7 +219,7 @@ class ADCMixin(object):
 
         for x in xrange(0, samples):
 
-            value = self.read_mcp3008(channel_num)
+            value = self.read(channel_num=channel_num)
             readings.append(value)
 
         m = median(readings)
