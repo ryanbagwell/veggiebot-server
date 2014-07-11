@@ -1,7 +1,9 @@
 from .mixins import ADCMixin, ParseDataMixin
+from .utils import get_volts
 import time
 import datetime
 import RPi.GPIO as GPIO
+
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -167,7 +169,7 @@ class MoistureSensor(ADCMixin, SoilData):
 
         GPIO.setup(self.moisture_power_pin, GPIO.OUT)
 
-    def get_moisture(self):
+    def get_moisture(self, sample_size=30):
 
         self.setup()
 
@@ -175,7 +177,7 @@ class MoistureSensor(ADCMixin, SoilData):
         GPIO.output(self.moisture_power_pin, True)
 
         """ Read the value from the chip """
-        moisture = self.read(channel_num=self.moisture_adc_channel)
+        moisture = self.sample(samples=sample_size, channel_num=self.moisture_adc_channel)
 
         """ Shut off power to the sensor """
         GPIO.output(self.moisture_power_pin, False)
@@ -190,13 +192,13 @@ class MoistureSensor(ADCMixin, SoilData):
         GPIO.setup(self.temperature_power_pin, GPIO.OUT)
         GPIO.output(self.temperature_power_pin, True)
 
-        reading = self.read(channel_num=self.temperature_adc_channel)
+        reading = self.sample(channel_num=self.temperature_adc_channel)
 
         """ Turn the power off """
         GPIO.output(self.temperature_power_pin, False)
 
         """ Convert the value to voltage, then to celsius """
-        celsius = (reading * 330) / 1023.0 - 50
+        celsius = (reading * 330.0) / 1023.0 - 50.0
 
         """ Convert it to farenheit if needed """
         if fahrenheit:
