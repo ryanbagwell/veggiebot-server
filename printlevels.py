@@ -1,5 +1,5 @@
 from lib.devices import MoistureSensor
-from lib.utils import get_kpa, get_volts
+from lib.utils import get_kpa, get_volts, get_resistance
 import time
 
 sensor = MoistureSensor()
@@ -10,7 +10,7 @@ while True:
 
     moisture_volts = get_volts(moisture_reading)
 
-    moisture_ohms = moisture_volts / 0.0004514711929179567
+    moisture_ohms = get_resistance(moisture_volts, 0.0004514711929179567)
 
     moisture_kiloohms = moisture_ohms / 1000
 
