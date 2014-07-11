@@ -1,11 +1,12 @@
-
-
-
-
 def get_volts(reading, input_volts=3.3):
     """ Convert a digital reading to volts """
 
     return (reading * input_volts) / 1024
+
+
+def get_resistance(volts, amps):
+
+    return volts / amps
 
 
 def get_kpa(kohms, celsius):
