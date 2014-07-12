@@ -33,22 +33,5 @@ class TestSequenceFunctions(unittest.TestCase):
         data = {'pumpStatus': toggle_setting()}
         self.settings.update_object(self.settings.objectId, data)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 if __name__ == '__main__':
     unittest.main()
