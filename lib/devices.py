@@ -121,6 +121,12 @@ class MoistureSensor(ADCMixin, SoilData):
         super(MoistureSensor, self).__init__(*args, **kwargs)
         super(SoilData, self).__init__(*args, **kwargs)
 
+        """ Initially, set the last_saved attribute """
+        latest_data = self.get_latest_data()
+        last_saved = latest_data['results'][0]['createdAt']
+        self.last_saved = datetime.datetime.strptime(last_saved,
+                                                     "%Y-%m-%dT%H:%M:%S")
+
     def setup(self):
         super(MoistureSensor, self).setup()
 
@@ -136,7 +142,8 @@ class MoistureSensor(ADCMixin, SoilData):
         time.sleep(2)
 
         """ Read the value from the chip """
-        moisture = self.sample(samples=sample_size, channel_num=self.moisture_adc_channel)
+        moisture = self.sample(samples=sample_size,
+                               channel_num=self.moisture_adc_channel)
 
         """ Shut off power to the sensor """
         GPIO.output(self.moisture_power_pin, False)
@@ -167,6 +174,12 @@ class MoistureSensor(ADCMixin, SoilData):
 
         return celsius
 
+    def save_data(self, payload):
+
+        self.last_saved = datetime.datetime.now()
+
+        super(MoistureSensor, self).save_data(payload)
+
     def get_results(self):
         """ Gets the results of both temperature and moisture """
 
@@ -175,3 +188,14 @@ class MoistureSensor(ADCMixin, SoilData):
         temp = self.get_temperature()
 
         return moisture, temp
+
+    def get_latest_data(self, interval=30):
+
+        params = {
+            'order': '-createdAt',
+            'limit': 1,
+        }
+
+        return self.get_data(payload=params)
+
+
