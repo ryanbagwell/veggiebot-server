@@ -35,7 +35,7 @@ def read_values():
 
     moisture_volts = get_volts(moisture_reading)
 
-    moisture_ohms = get_resistance(moisture_volts, 0.00089156)
+    moisture_ohms = get_resistance(moisture_volts, 0.000328)
 
     moisture_kiloohms = moisture_ohms / 1000
 
