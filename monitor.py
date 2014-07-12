@@ -103,7 +103,7 @@ while True:
 
     settings.refresh()
 
-    thread.start_new_thread(trigger_pump, (settings,))
+    trigger_pump(settings)
 
     since_last_saved = datetime.datetime.utcnow().replace(tzinfo=pytz.UTC) - moisture_sensor.last_saved
 
@@ -111,5 +111,4 @@ while True:
 
     if minutes_since_last_saved >= settings.dataInterval:
 
-        thread.start_new_thread(save_data, ())
-
+        save_data(settings)
