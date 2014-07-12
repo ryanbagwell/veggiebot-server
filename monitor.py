@@ -111,4 +111,4 @@ while True:
 
     if minutes_since_last_saved >= settings.dataInterval:
 
-        save_data(settings)
+        save_data()
