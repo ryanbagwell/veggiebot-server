@@ -1,5 +1,5 @@
-from .mixins import ADCMixin, ParseDataMixin
-from .utils import get_volts
+from .mixins import ParseDataMixin
+from .gpio_mixins import ADCMixin
 import time
 import datetime
 import RPi.GPIO as GPIO
@@ -14,49 +14,6 @@ class SoilData(ParseDataMixin):
         to/from Parse.com """
 
     parse_classname = 'SoilData'
-
-
-class Settings(ParseDataMixin):
-    """ A class to load app settings from parse.com """
-
-    parse_classname = 'Settings'
-    pumpStatus = 'off'
-    autoThreshold = 500
-    changed = {}
-
-    def __init__(self, *args, **kwargs):
-
-        super(Settings, self).__init__(*args, **kwargs)
-
-        try:
-            self.get_data()
-
-        except Exception as e:
-            print e
-
-    def get_data(self):
-
-        q = '{"user":{"$inQuery":{"where":{"email":"%s"},"className":"_User"}}}' % self.parse_user_email
-
-        params = {
-            'where': q
-        }
-
-        json_data = super(Settings, self).get_data(payload=params)
-
-        for k, v in json_data['results'][0].items():
-
-            if getattr(self, k, None) != v:
-                self.changed[k] = v
-            else:
-                try:
-                    self.changed.pop(k, None)
-                except:
-                    pass
-
-            setattr(self, k, v)
-
-        return json_data
 
 
 class Flow(SoilData):
