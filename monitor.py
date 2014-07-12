@@ -1,5 +1,6 @@
-from lib.devices import Pin, Settings, MoistureSensor
-from lib.utils import get_kpa, get_volts
+from lib.devices import Pin, MoistureSensor
+from lib.settings import Settings
+from lib.utils import get_kpa, get_volts, get_resistance
 import datetime
 import os
 import random
@@ -33,7 +34,7 @@ def read_values():
 
     moisture_volts = get_volts(moisture_reading)
 
-    moisture_ohms = moisture_volts / 0.0004514711929179567
+    moisture_ohms = get_resistance(moisture_volts, 0.0004514711929179567)
 
     moisture_kiloohms = moisture_ohms / 1000
 
@@ -57,55 +58,57 @@ def read_values():
     }
 
 
-def save_data(settings):
+def save_data():
 
-    """ Only log our data every 30 minutes """
-    if datetime.datetime.now().minute in [0, 30] and datetime.datetime.now().second is 0:
+    payload = read_values()
 
-        print "Saving data"
-
-        payload = read_values()
-
-        moisture_sensor.save_data(payload)
+    moisture_sensor.save_data(payload)
 
 
 def trigger_pump(settings):
 
-    pin = Pin(17)
+    status_change = settings.changed.get('pumpStatus', None)
 
-    settings.get_data()
+    if status_change == 'off':
+        pin = Pin(17)
+        print "Turning pump on ..."
+        pin.off() #Off completes the circuit
+        return
 
-    if settings.changed.get('pumpStatus', None):
+    if status_change == 'on':
+        pin = Pin(17)
+        print "Turning pump off ..."
+        pin.on() #Off completes the circuit
+        return
 
-        if settings.pumpStatus == 'on':
-            print "Turning pump on ..."
-            pin.off() #Off completes the circuit
-            return
+    if settings.pumpStatus == 'auto':
 
-        elif settings.pumpStatus == 'off':
-            print "Turning pump off ..."
-            pin.on() #On opens the cirtuit
-            return
-
-    else:
+        pin = Pin(17)
 
         values = read_values()
 
-        if settings.pumpStatus == 'auto':
+        if values['moistureLevel'] < settings.autoThreshold - 50:
+            pin.off()
 
-            if values['moistureReading'] < settings.autoThreshold - 50:
-                pin.off()
+        elif values['moistureLevel'] > settings.autoThreshold + 50:
+            pin.on()
 
-            elif values['moistureReading'] > settings.autoThreshold + 50:
-                pin.on()
 
 settings = Settings()
 
-print read_values()
 while True:
 
     sleep(1)
 
-    thread.start_new_thread(trigger_pump,  (settings,))
+    settings.refresh()
 
-    thread.start_new_thread(save_data, (settings,))
+    thread.start_new_thread(trigger_pump, (settings,))
+
+    since_last_saved = datetime.datetime.now() - moisture_sensor.last_saved
+
+    minutes_since_last_saved = float(since_last_saved.seconds / 60.0)
+
+    if minutes_since_last_saved >= settings.dataInterval:
+
+        thread.start_new_thread(save_data)
+

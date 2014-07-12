@@ -9,6 +9,7 @@ class Settings(ParseDataMixin):
     defaults = {
         'pumpStatus': 'off',
         'autoThreshold': '500',
+        'dataInterval': 30,
     }
 
     changed = {}
