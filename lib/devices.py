@@ -176,7 +176,7 @@ class MoistureSensor(ADCMixin, SoilData):
 
     def save_data(self, payload):
 
-        self.last_saved = datetime.datetime.utcnow()
+        self.last_saved = datetime.datetime.utcnow().replace(tzinfo=pytz.UTC)
 
         super(MoistureSensor, self).save_data(payload)
 

@@ -111,5 +111,5 @@ while True:
 
     if minutes_since_last_saved >= settings.dataInterval:
 
-        thread.start_new_thread(save_data)
+        thread.start_new_thread(save_data, ())
 
