@@ -104,7 +104,7 @@ while True:
 
     thread.start_new_thread(trigger_pump, (settings,))
 
-    since_last_saved = datetime.datetime.now() - moisture_sensor.last_saved
+    since_last_saved = datetime.datetime.utcnow() - moisture_sensor.last_saved
 
     minutes_since_last_saved = float(since_last_saved.seconds / 60.0)
 

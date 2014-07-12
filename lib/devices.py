@@ -2,6 +2,7 @@ from .mixins import ParseDataMixin
 from .gpio_mixins import ADCMixin
 import time
 import datetime
+import dateutil.parser
 import RPi.GPIO as GPIO
 
 
@@ -124,8 +125,7 @@ class MoistureSensor(ADCMixin, SoilData):
         """ Initially, set the last_saved attribute """
         latest_data = self.get_latest_data()
         last_saved = latest_data['results'][0]['createdAt']
-        self.last_saved = datetime.datetime.strptime(last_saved,
-                                                     "%Y-%m-%dT%H:%M:%S")
+        self.last_saved = dateutil.parser.parse(last_saved)
 
     def setup(self):
         super(MoistureSensor, self).setup()
@@ -147,7 +147,7 @@ class MoistureSensor(ADCMixin, SoilData):
 
         """ Shut off power to the sensor """
         GPIO.output(self.moisture_power_pin, False)
-    
+
         time.sleep(1)
 
         return moisture
@@ -176,7 +176,7 @@ class MoistureSensor(ADCMixin, SoilData):
 
     def save_data(self, payload):
 
-        self.last_saved = datetime.datetime.now()
+        self.last_saved = datetime.datetime.utcnow()
 
         super(MoistureSensor, self).save_data(payload)
 
