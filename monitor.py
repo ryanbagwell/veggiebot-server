@@ -6,6 +6,7 @@ import os
 import random
 from time import sleep
 import thread
+import pytz
 
 
 def speak(message):
@@ -104,7 +105,7 @@ while True:
 
     thread.start_new_thread(trigger_pump, (settings,))
 
-    since_last_saved = datetime.datetime.utcnow() - moisture_sensor.last_saved
+    since_last_saved = datetime.datetime.utcnow().replace(tzinfo=pytz.UTC) - moisture_sensor.last_saved
 
     minutes_since_last_saved = float(since_last_saved.seconds / 60.0)
 
