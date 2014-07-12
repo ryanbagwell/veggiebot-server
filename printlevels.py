@@ -22,6 +22,14 @@ while True:
 
     fahrenheit = (celsius * 9.0 / 5.0) + 32.0
 
-    print "Moisture: %s kPa; Temp: %s &degF;" % (kpa, fahrenheit)
+    output = [
+        'Reading %s' % moisture_reading,
+        'Voltage %s' % moisture_volts,
+        'Ohms %s' % moisture_ohms,
+        'kOhms %s' % moisture_kiloohms,
+        'kPa %s' % kpa,
+    ]
+
+    print ' | '.join(output)
 
     time.sleep(1)
