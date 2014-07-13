@@ -73,13 +73,13 @@ def trigger_pump(settings):
     if status_change == 'off':
         pin = Pin(17)
         print "Turning pump on ..."
-        pin.off() #Off completes the circuit
+        pin.on() #Off completes the circuit
         return
 
     if status_change == 'on':
         pin = Pin(17)
         print "Turning pump off ..."
-        pin.on() #Off completes the circuit
+        pin.off() #Off completes the circuit
         return
 
     if settings.pumpStatus == 'auto':
@@ -101,7 +101,10 @@ while True:
 
     sleep(1)
 
-    settings.refresh()
+    try:
+        settings.refresh()
+    except:
+        print "Couldn't refresh settings."
 
     trigger_pump(settings)
 
@@ -110,5 +113,4 @@ while True:
     minutes_since_last_saved = float(since_last_saved.seconds / 60.0)
 
     if minutes_since_last_saved >= settings.dataInterval:
-
         save_data()
