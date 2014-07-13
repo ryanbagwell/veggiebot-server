@@ -70,16 +70,16 @@ def trigger_pump(settings):
 
     status_change = settings.changed.get('pumpStatus', None)
 
-    if status_change == 'off':
-        pin = Pin(17)
-        print "Turning pump on ..."
-        pin.on() #Off completes the circuit
-        return
-
     if status_change == 'on':
         pin = Pin(17)
+        print "Turning pump on ..."
+        pin.off() #On opens the circuit
+        return
+
+    if status_change == 'off':
+        pin = Pin(17)
         print "Turning pump off ..."
-        pin.off() #Off completes the circuit
+        pin.on() #Off completes the circuit
         return
 
     if settings.pumpStatus == 'auto':
