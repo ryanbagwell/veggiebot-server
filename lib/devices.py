@@ -1,5 +1,5 @@
 from .mixins import ParseDataMixin
-from .gpio_mixins import ADCMixin
+from .gpio_mixins import ADCMixin, ResistanceFromCapacitorMixin
 import time
 import datetime
 import dateutil.parser
@@ -108,15 +108,14 @@ class Pin(object):
             self.on()
 
 
-class MoistureSensor(ADCMixin, SoilData):
+class MoistureSensor(ResistanceFromCapacitorMixin, ADCMixin, SoilData):
     """ This class consists of mixins that will
         read the Moisture sensor data from the mcp3008, and save it to
         parse.com """
 
     """ Define the pins for our sensors """
-    moisture_power_pin = 22
-    temperature_power_pin = 22
-    moisture_adc_channel = 0
+    resistance_supply_pin = 22
+    resistance_dischange_pin = 4
     temperature_adc_channel = 1
 
     def __init__(self, *args, **kwargs):
@@ -128,30 +127,11 @@ class MoistureSensor(ADCMixin, SoilData):
         last_saved = latest_data['results'][0]['createdAt']
         self.last_saved = dateutil.parser.parse(last_saved)
 
-    def setup(self):
-        super(MoistureSensor, self).setup()
+    def get_moisture(self):
 
-        GPIO.setup(self.moisture_power_pin, GPIO.OUT)
+        ohms = self.get_resistance_from_capacitance()
 
-    def get_moisture(self, sample_size=30):
-
-        self.setup()
-
-        """ Give the moisture sensor some power """
-        GPIO.output(self.moisture_power_pin, True)
-
-        time.sleep(2)
-
-        """ Read the value from the chip """
-        moisture = self.sample(samples=sample_size,
-                               channel_num=self.moisture_adc_channel)
-
-        """ Shut off power to the sensor """
-        GPIO.output(self.moisture_power_pin, False)
-
-        time.sleep(1)
-
-        return moisture
+        return ohms
 
     def get_temperature(self, fahrenheit=False):
 
@@ -198,5 +178,4 @@ class MoistureSensor(ADCMixin, SoilData):
         }
 
         return self.get_data(payload=params)
-
 
