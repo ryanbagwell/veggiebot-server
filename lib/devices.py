@@ -139,9 +139,6 @@ class MoistureSensor(ResistanceFromCapacitorMixin, ADCMixin, SoilData):
 
         reading = self.sample(channel_num=self.temperature_adc_channel)
 
-        """ Turn the power off """
-        GPIO.output(self.temperature_power_pin, False)
-
         """ Convert the value to voltage, then to celsius """
         celsius = (reading * 330.0) / 1023.0 - 50.0
 
