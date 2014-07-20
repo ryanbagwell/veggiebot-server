@@ -232,10 +232,19 @@ class ResistanceFromCapacitorMixin(object):
             this is happening """
         seconds = (time.time() - float(start_time)) * 2
 
-        #print "Seconds: %s" % seconds
-
         ohms = seconds / 0.000001
 
-        #print "Ohms: %s" % ohms
-
         return ohms
+
+    def sample_resistance_from_capacitance(self, samples=5):
+
+        readings = []
+
+        for x in xrange(0, samples):
+
+            value = self.get_resistance_from_capacitance()
+            readings.append(value)
+
+        m = median(readings)
+
+        return int(m)

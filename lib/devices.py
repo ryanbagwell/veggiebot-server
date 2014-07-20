@@ -129,7 +129,7 @@ class MoistureSensor(ResistanceFromCapacitorMixin, ADCMixin, SoilData):
 
     def get_moisture(self):
 
-        ohms = self.get_resistance_from_capacitance()
+        ohms = self.sample_resistance_from_capacitance()
 
         return ohms
 
