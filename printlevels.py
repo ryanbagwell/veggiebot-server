@@ -22,6 +22,7 @@ while True:
         'Ohms %s' % moisture_ohms,
         'kOhms %s' % moisture_kiloohms,
         'kPa %s' % kpa,
+        'Temp %s' % fahrenheit,
     ]
 
     print ' | '.join(output)
