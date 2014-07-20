@@ -116,7 +116,7 @@ class MoistureSensor(ResistanceFromCapacitorMixin, ADCMixin, SoilData):
     """ Define the pins for our sensors """
     resistance_supply_pin = 22
     resistance_dischange_pin = 4
-    temperature_adc_channel = 1
+    temperature_adc_channel = 0
 
     def __init__(self, *args, **kwargs):
         super(MoistureSensor, self).__init__(*args, **kwargs)
