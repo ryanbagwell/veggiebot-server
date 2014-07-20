@@ -137,10 +137,6 @@ class MoistureSensor(ResistanceFromCapacitorMixin, ADCMixin, SoilData):
 
         self.setup()
 
-        """ Give the temperature sensor some power """
-        GPIO.setup(self.temperature_power_pin, GPIO.OUT)
-        GPIO.output(self.temperature_power_pin, True)
-
         reading = self.sample(channel_num=self.temperature_adc_channel)
 
         """ Turn the power off """
