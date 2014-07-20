@@ -230,9 +230,9 @@ class ResistanceFromCapacitorMixin(object):
         """ It's only reflecting the half of the time necessary to
             charge it up, so multiply it by 2. I don't know why
             this is happening """
-        seconds = (time.time() - float(start_time)) * 2
+        seconds = (time.time() - float(start_time)) * 2.0
 
-        ohms = seconds / 0.000001
+        ohms = float(seconds) / 0.000001
 
         return ohms
 

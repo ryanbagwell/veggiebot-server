@@ -8,9 +8,7 @@ while True:
 
     moisture_ohms = sensor.get_moisture()
 
-    moisture_kiloohms = moisture_ohms / 1000
-
-    time.sleep(1)
+    moisture_kiloohms = moisture_ohms / 1000.0
 
     celsius = sensor.get_temperature()
 
