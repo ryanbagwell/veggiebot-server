@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 from numpy import median
+import time
 
 
 class ADCMixin(object):
@@ -199,3 +200,42 @@ class ADCMixin(object):
         m = median(readings)
 
         return int(m)
+
+
+class ResistanceFromCapacitorMixin(object):
+    """ Measures the resistance with a capacitor """
+    resistance_supply_pin = None
+    resistance_dischange_pin = None
+
+    def discharge_capacitor(self):
+        GPIO.setup(self.resistance_dischange_pin, GPIO.IN)
+        GPIO.setup(self.resistance_supply_pin, GPIO.OUT)
+        GPIO.output(self.resistance_supply_pin, False)
+        time.sleep(0.25)
+
+    def get_resistance_from_capacitance(self):
+        self.discharge_capacitor()
+
+        GPIO.setup(self.resistance_supply_pin, GPIO.IN)
+        GPIO.setup(self.resistance_dischange_pin, GPIO.OUT)
+        GPIO.output(self.resistance_dischange_pin, False)
+
+        start_time = time.time()
+
+        GPIO.output(self.resistance_dischange_pin, GPIO.HIGH)
+
+        while not GPIO.input(self.resistance_supply_pin):
+            pass
+
+        """ It's only reflecting the half of the time necessary to
+            charge it up, so multiply it by 2. I don't know why
+            this is happening """
+        seconds = (time.time() - float(start_time)) * 2
+
+        #print "Seconds: %s" % seconds
+
+        ohms = seconds / 0.000001
+
+        #print "Ohms: %s" % ohms
+
+        return ohms
