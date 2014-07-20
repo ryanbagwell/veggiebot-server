@@ -1,16 +1,12 @@
 from lib.devices import MoistureSensor
-from lib.utils import get_kpa, get_volts, get_resistance
+from lib.utils import get_kpa
 import time
 
 sensor = MoistureSensor()
 
 while True:
 
-    moisture_reading = sensor.get_moisture()
-
-    moisture_volts = get_volts(moisture_reading)
-
-    moisture_ohms = get_resistance(moisture_volts, 0.000328)
+    moisture_ohms = sensor.get_moisture()
 
     moisture_kiloohms = moisture_ohms / 1000
 
@@ -23,8 +19,8 @@ while True:
     fahrenheit = (celsius * 9.0 / 5.0) + 32.0
 
     output = [
-        'Reading %s' % moisture_reading,
-        'Voltage %s' % moisture_volts,
+        'Reading %s' % 0,
+        'Voltage %s' % 0,
         'Ohms %s' % moisture_ohms,
         'kOhms %s' % moisture_kiloohms,
         'kPa %s' % kpa,
