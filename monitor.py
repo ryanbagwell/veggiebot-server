@@ -33,7 +33,7 @@ def read_values():
 
     moisture_ohms = moisture_sensor.get_moisture()
 
-    moisture_kiloohms = moisture_ohms / 1000
+    moisture_kiloohms = moisture_ohms / 1000.0
 
     kpa = get_kpa(moisture_kiloohms, celsius)
 
