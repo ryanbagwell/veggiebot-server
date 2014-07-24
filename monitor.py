@@ -9,6 +9,8 @@ import thread
 import pytz
 import logging
 
+logging.basicConfig(filename='/var/log/veggiebot.log',level=logging.DEBUG)
+
 logger = logging.getLogger(__name__)
 
 def speak(message):
