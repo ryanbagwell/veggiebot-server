@@ -7,7 +7,9 @@ import random
 from time import sleep
 import thread
 import pytz
+import logging
 
+logger = logging.getLogger(__name__)
 
 def speak(message):
 
@@ -68,13 +70,13 @@ def trigger_pump(settings):
 
     if status_change == 'on':
         pin = Pin(17)
-        print "Turning pump on ..."
+        logger.info("Turning pump on ...")
         pin.off() #On opens the circuit
         return
 
     if status_change == 'off':
         pin = Pin(17)
-        print "Turning pump off ..."
+        logger.info("Turning pump off ...")
         pin.on() #Off completes the circuit
         return
 
@@ -100,7 +102,7 @@ while True:
     try:
         settings.refresh()
     except:
-        print "Couldn't refresh settings."
+        logger.info("Couldn't refresh settings")
 
     trigger_pump(settings)
 
@@ -109,4 +111,5 @@ while True:
     minutes_since_last_saved = float(since_last_saved.seconds / 60.0)
 
     if minutes_since_last_saved >= settings.dataInterval:
+        logger.info("Saving data")
         save_data()

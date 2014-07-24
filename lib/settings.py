@@ -1,4 +1,7 @@
 from .mixins import ParseDataMixin
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Settings(ParseDataMixin):
@@ -52,3 +55,9 @@ class Settings(ParseDataMixin):
                     pass
 
             setattr(self, k, v)
+
+        if len(self.changed) > 0:
+
+            for k, v in self.changed:
+                logger.info("Got change for %s setting. New value: %s" % (k, v))
+
