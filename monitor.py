@@ -9,9 +9,9 @@ import thread
 import pytz
 import logging
 
-logging.basicConfig(filename='/var/log/veggiebot.log',level=logging.DEBUG)
+logging.basicConfig(filename='/var/log/veggiebot.log',level=logging.WARNING)
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('Veggiebot')
 
 def speak(message):
 
@@ -103,8 +103,8 @@ while True:
 
     try:
         settings.refresh()
-    except:
-        logger.info("Couldn't refresh settings")
+    except Exception e:
+        logger.warning("Couldn't refresh settings. Exception: %s" % e)
 
     trigger_pump(settings)
 
