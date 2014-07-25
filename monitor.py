@@ -9,7 +9,7 @@ import thread
 import pytz
 import logging
 
-logging.basicConfig(filename='/var/log/veggiebot.log',level=logging.WARNING)
+logging.basicConfig(filename='/var/log/veggiebot.log')
 
 logger = logging.getLogger('Veggiebot')
 
@@ -103,7 +103,7 @@ while True:
 
     try:
         settings.refresh()
-    except Exception e:
+    except Exception as e:
         logger.warning("Couldn't refresh settings. Exception: %s" % e)
 
     trigger_pump(settings)
