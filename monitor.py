@@ -9,7 +9,9 @@ import thread
 import pytz
 import logging
 
-logging.basicConfig(filename='/var/log/veggiebot.log')
+logging.addLevelName(25, 'VeggieBotInfo')
+
+logging.basicConfig(filename='/var/log/veggiebot.log', format="%(levelname)s: %(asctime) %(message)s", level="VeggieBotInfo")
 
 logger = logging.getLogger('Veggiebot')
 
@@ -72,13 +74,13 @@ def trigger_pump(settings):
 
     if status_change == 'on':
         pin = Pin(17)
-        logger.info("Turning pump on ...")
+        logger.log(25, "Turning pump on ...")
         pin.off() #On opens the circuit
         return
 
     if status_change == 'off':
         pin = Pin(17)
-        logger.info("Turning pump off ...")
+        logger.log(25, "Turning pump off ...")
         pin.on() #Off completes the circuit
         return
 
@@ -113,5 +115,5 @@ while True:
     minutes_since_last_saved = float(since_last_saved.seconds / 60.0)
 
     if minutes_since_last_saved >= settings.dataInterval:
-        logger.info("Saving data")
-        save_data()
+        logger.log(25, "Saving data")
+        thread.start_new_thread(save_data, ())
