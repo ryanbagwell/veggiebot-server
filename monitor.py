@@ -1,6 +1,5 @@
 from lib.devices import Pin, MoistureSensor
 from lib.settings import Settings
-from lib.utils import get_kpa, get_volts, get_resistance
 import datetime
 import os
 import random
@@ -11,7 +10,9 @@ import logging
 
 logging.addLevelName(25, 'VeggieBotInfo')
 
-logging.basicConfig(filename='/var/log/veggiebot.log', format='%(levelname)s: %(asctime)s %(message)s', level=25)
+logging.basicConfig(filename='/var/log/veggiebot.log',
+                    format='%(levelname)s: %(asctime)s %(message)s',
+                    level=25)
 
 logger = logging.getLogger('Veggiebot')
 
@@ -115,6 +116,8 @@ while True:
     since_last_saved = datetime.datetime.utcnow().replace(tzinfo=pytz.UTC) - moisture_sensor.last_saved
 
     minutes_since_last_saved = float(since_last_saved.seconds / 60.0)
+
+    logger.log(25, "Miinutes since last saved: %s" % minutes_since_last_saved)
 
     if minutes_since_last_saved >= settings.dataInterval:
         logger.log(25, "Saving data")

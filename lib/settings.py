@@ -1,7 +1,7 @@
 from .mixins import ParseDataMixin
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('VeggieBot')
 
 
 class Settings(ParseDataMixin):
@@ -59,5 +59,5 @@ class Settings(ParseDataMixin):
         if len(self.changed) > 0:
 
             for k, v in self.changed.items():
-                logger.info("Got change for %s setting. New value: %s" % (k, v))
+                logger.log(25, "Setting \"%s\" changed. New value: %s" % (k, v))
 
