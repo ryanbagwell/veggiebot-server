@@ -13,17 +13,19 @@ logging.addLevelName(25, 'VeggieBotInfo')
 
 log_format = '%(levelname)s: %(asctime)s %(message)s'
 
-logging.basicConfig(filename='/var/log/veggiebot.log',
-                    format=log_format,
-                    level=25)
-
 logger = logging.getLogger('Veggiebot')
+logger.setLevel(logging.DEBUG)
 
-stream_handler = logging.StreamHandler()
-stream_handler.setLevel(logging.DEBUG)
-stream_handler.setFormatter(logging.Formatter(log_format))
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.DEBUG)
+console_handler.setFormatter(logging.Formatter(log_format))
 
-logger.addHandler()
+file_handler = logging.FileHandler('/var/log/veggiebot.log')
+file_handler.setLevel(25)
+file_handler.setFormatter(logging.Formatter(log_format))
+
+logger.addHandler(console_handler)
+logger.addHandler(file_handler)
 
 logger.log(25, "Starting monitor")
 
@@ -115,7 +117,7 @@ while True:
 
     minutes_since_last_saved = float(since_last_saved.seconds / 60.0)
 
-    logger.debug(25, "Miinutes since last saved: %s" % minutes_since_last_saved)
+    logger.debug("Minutes since last saved: %s" % minutes_since_last_saved)
 
     if minutes_since_last_saved >= settings.dataInterval:
         logger.log(25, "Saving data")
