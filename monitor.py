@@ -11,11 +11,19 @@ import logging
 
 logging.addLevelName(25, 'VeggieBotInfo')
 
+log_format = '%(levelname)s: %(asctime)s %(message)s'
+
 logging.basicConfig(filename='/var/log/veggiebot.log',
-                    format='%(levelname)s: %(asctime)s %(message)s',
+                    format=log_format,
                     level=25)
 
 logger = logging.getLogger('Veggiebot')
+
+stream_handler = logging.StreamHandler()
+stream_handler.setLevel(logging.DEBUG)
+stream_handler.setFormatter(logging.Formatter(log_format))
+
+logger.addHandler()
 
 logger.log(25, "Starting monitor")
 
