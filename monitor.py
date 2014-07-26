@@ -11,7 +11,7 @@ import logging
 
 logging.addLevelName(25, 'VeggieBotInfo')
 
-logging.basicConfig(filename='/var/log/veggiebot.log', format="%(levelname)s: %(asctime) %(message)s", level="VeggieBotInfo")
+logging.basicConfig(filename='/var/log/veggiebot.log', format='%(levelname)s: %(asctime)s %(message)s', level=25)
 
 logger = logging.getLogger('Veggiebot')
 
@@ -24,6 +24,8 @@ def speak(message):
 
     cmd = "espeak '%s' -s 160 %s" % (message, voice)
     os.system(cmd)
+
+logger.log(25, "Starting monitor")
 
 
 moisture_sensor = MoistureSensor()
