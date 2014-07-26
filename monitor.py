@@ -1,4 +1,5 @@
 from lib.devices import Pin, MoistureSensor
+from lib.utils import get_kpa
 from lib.settings import Settings
 import datetime
 import os
@@ -16,18 +17,7 @@ logging.basicConfig(filename='/var/log/veggiebot.log',
 
 logger = logging.getLogger('Veggiebot')
 
-def speak(message):
-
-    gender = random.choice(['m','f',])
-    variant = random.choice(range(1,7))
-
-    voice = "-ven-us+%s%s" % (gender, variant)
-
-    cmd = "espeak '%s' -s 160 %s" % (message, voice)
-    os.system(cmd)
-
 logger.log(25, "Starting monitor")
-
 
 moisture_sensor = MoistureSensor()
 
