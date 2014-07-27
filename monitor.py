@@ -117,8 +117,6 @@ while True:
 
     minutes_since_last_saved = float(since_last_saved.seconds / 60.0)
 
-    logger.debug("Minutes since last saved: %s" % minutes_since_last_saved)
-
     if minutes_since_last_saved >= settings.dataInterval:
         logger.log(25, "Saving data")
         thread.start_new_thread(save_data, ())
