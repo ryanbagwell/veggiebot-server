@@ -104,10 +104,9 @@ settings = Settings()
 
 while True:
 
-    sleep(1)
-
     try:
-        settings.refresh()
+        thread.start_new_thread(settings.refresh, ())
+        sleep(2)
     except Exception as e:
         logger.warning("Couldn't refresh settings. Exception: %s" % e)
 
